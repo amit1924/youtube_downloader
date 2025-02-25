@@ -17,6 +17,10 @@ if (!fs.existsSync(downloadsDir)) {
   fs.mkdirSync(downloadsDir, { recursive: true });
 }
 
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
+
 // Download endpoint for video and audio
 app.get("/download", async (req, res) => {
   const videoUrl = req.query.url;
