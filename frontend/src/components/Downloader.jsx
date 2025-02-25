@@ -16,7 +16,7 @@ export default function Downloader() {
     setProgress(0);
     try {
       const response = await axios.get(
-        `https://youtube-downloader-backend-inky.vercel.app/download`,
+        `https://youtube-downloader-3j75.onrender.com/download`,
         {
           params: { url, res: resolution, format, bitrate },
           responseType: "blob",
