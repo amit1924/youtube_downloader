@@ -34,3 +34,4 @@ backend/downloads/*.webm
 
 # Ignore OS-specific files
 Thumbs.db
+.vercel
