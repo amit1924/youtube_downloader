@@ -35,17 +35,7 @@ async function getYouTubeCookies() {
   const cookies = await page.cookies();
   await browser.close();
 
-  // Format cookies as a string to pass to yt-dlp
-  const cookiesString = cookies
-    .map((cookie) => `${cookie.name}=${cookie.value}`)
-    .join("; ");
-
-  return cookiesString;
-}
-
-// Delay function to avoid making rapid requests
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return cookies;
 }
 
 // Download endpoint for video and audio
@@ -71,7 +61,7 @@ app.get("/download", async (req, res) => {
 
     console.log("Starting video download...");
 
-    // Pass cookies to yt-dlp using the --cookies flag and set headers
+    // Pass cookies to yt-dlp using the --cookies flag
     await exec(videoUrl, {
       format: `bestvideo[height<=${resolution.replace(
         "p",
@@ -79,20 +69,12 @@ app.get("/download", async (req, res) => {
       )}]+bestaudio/best`,
       output: videoPath,
       cookies: cookies, // Pass cookies here
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-      },
-      retries: 3, // Retry 3 times in case of failure
     });
 
     if (!fs.existsSync(videoPath)) {
       console.error("Video file not found after download.");
       return res.status(500).send("Video download failed.");
     }
-
-    // Introduce a delay to avoid making rapid requests
-    await delay(1000); // Delay of 1 second between requests
 
     if (format === "video" || format === "webm") {
       console.log("Sending video file...");
